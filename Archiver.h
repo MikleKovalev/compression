@@ -37,6 +37,7 @@ public:
         vector<char> characters;
         read_data(characters);
         CodeTable codes(characters);
+        cout << codes << endl;
         string binary;
         for (const char& character : characters) {
             binary += codes[character];

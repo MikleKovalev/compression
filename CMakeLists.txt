@@ -3,4 +3,4 @@ project(compression)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(compression main.cpp CodeTable.cpp CodeTable.h Archiver.h Unarchiver.h)
+add_executable(compression main.cpp CodeTable.h Archiver.h Unarchiver.h)
