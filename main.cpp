@@ -19,7 +19,7 @@ string int_to_string(int value) {
 int main() {
     string work_case;
     cin >> work_case;
-    for (int i = 1; i < 2; ++i) {
+    for (int i = 1; i < 11; ++i) {
         cout << "Test #" << i << endl;
         string data_file_name = "Тест_" + int_to_string(i) + ".txt";
         string archive_file_name = "archive_" + int_to_string(i);

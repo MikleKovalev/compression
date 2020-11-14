@@ -17,32 +17,30 @@ class CodeTable {
 private:
     map<char, string> codes;
 
-    void build(vector<Node> nodes, const string& code = "") {
-        if (nodes.empty()) {
-            return ;
+    void build(vector<Node>::iterator begin, vector<Node>::iterator end, const string& code = "") {
+        if (begin == end) {
+            return;
         }
-        if (nodes.size() == 1) {
-            codes[nodes[0].character] = code;
+        if (end - begin == 1) {
+            if (code.empty()) {
+                codes[begin->character] = "0";
+            } else {
+                codes[begin->character] = code;
+            }
+            return;
         }
-        sort(nodes.rbegin(), nodes.rend(), [&](Node& first, Node& second) {
-            return first.probability < second.probability;
-        });
-        double prob_sum = 0.0;
-        for (const Node& node : nodes) {
-            prob_sum += node.probability;
+        double halfProbability = 0.0;
+        for (auto it = begin; it != end; ++it) {
+            halfProbability += it->probability;
         }
-        double half_prob_sum = 0.0;
-        for (int i = 0; i < int(nodes.size()); ++i) {
-            half_prob_sum += nodes[i].probability;
-            if (half_prob_sum >= prob_sum / 2) {
-                build(vector<Node>(
-                        nodes.begin(),
-                        nodes.begin() + i + 1),
-                      code + '1');
-                build(vector<Node>(
-                        nodes.begin() + i,
-                        nodes.end()),
-                      code + '0');
+        halfProbability /= 2;
+        double probability = 0.0;
+        for (auto it = begin; it != end; ++it) {
+            probability += it->probability;
+            if (probability >= halfProbability) {
+                build(begin, it + 1, code + '0');
+                build(it + 1, end, code + '1');
+                return;
             }
         }
     }
@@ -54,15 +52,18 @@ public:
             ++count[character];
         }
         vector<Node> nodes(count.size());
-        int node_id = 0;
+        int nodeId = 0;
         for (const auto& record : count) {
-            nodes[node_id] = Node {
-                .character = record.first,
-                .probability = (double) record.second / characters.size(),
+            nodes[nodeId] = Node {
+                    .character = record.first,
+                    .probability = (double) record.second / characters.size(),
             };
-            ++node_id;
+            ++nodeId;
         }
-        build(nodes);
+        sort(nodes.rbegin(), nodes.rend(), [&](const Node& first, const Node& second) {
+            return first.probability < second.probability;
+        });
+        build(nodes.begin(), nodes.end());
     }
 
     string& operator[](char character) {
