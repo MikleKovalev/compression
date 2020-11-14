@@ -13,6 +13,7 @@ struct Node {
     double probability;
 };
 
+// Fano code table
 class CodeTable {
 private:
     map<char, string> codes;
